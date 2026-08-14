@@ -1,58 +1,44 @@
-"""
+r"""
 Author: YIDA zhuhansong@merach.com
-Date: 2026-08-10 11:06:06
+Date: 2026-08-11 21:14:53
 LastEditors: YIDA zhuhansong@merach.com
-LastEditTime: 2026-08-10 11:13:57
-FilePath: \\server-py\apps\\web-service\app\\core\\config.py
+LastEditTime: 2026-08-14 16:48:20
+FilePath: \server-py\apps\web-service\app\core\config.py
 Description:
 
 Copyright (c) 2026 by ${git_name_email}, All Rights Reserved.
 """
 
-from pydantic_settings import BaseSettings  # pyright: ignore[reportMissingImports]
+from pydantic_settings import BaseSettings
 
 
-class CommonSettings(BaseSettings):
+class _BaseSettingsWithEnv(BaseSettings):
+    # 配置读取方式：加载 .env 文件，并忽略未定义的额外字段
+    # 他会合并
+    model_config = {"env_file": ".env", "extra": "ignore"}
+
+
+# 通用配置
+class _CommonSettings(_BaseSettingsWithEnv):
     environment: str = "development"
 
 
-class WebSettings(BaseSettings):
-    app_name: str = "Awesome API"
-
-    # 配置读取方式
-    model_config = {
-        "env_file": ".env",  # 文件夹的位置
-        "env_prefix": "WEB_",  # 环境变量前缀
-    }
+# web服务配置
+class _WebSettings(_BaseSettingsWithEnv):
+    app_name: str = "Web Service API"
+    model_config = {"env_prefix": "WEB_"}
 
 
-# 实例化
-common_settings = CommonSettings()
-# 配置实例化
-web_settings = WebSettings()
-
-# 打印环境变量
-
-
-def print_settings() -> None:
-    """以表格形式打印当前生效的配置"""
-    rows = [
-        *common_settings.model_dump().items(),
-        *((f"web.{key}", value) for key, value in web_settings.model_dump().items()),
-    ]
-
-    title = "App Settings"
-    key_width = max(len(key) for key, _ in rows)
-    value_width = max(len(str(value)) for _, value in rows)
-    # "│ key : value │" 的内容宽度，并保证标题也能放得下
-    inner_width = max(key_width + value_width + 5, len(title) + 2)
-
-    print(f"┌{'─' * inner_width}┐")
-    print(f"│ {title:<{inner_width - 2}} │")
-    print(f"├{'─' * inner_width}┤")
-    for key, value in rows:
-        print(f"│ {key:<{key_width}} : {value!s:<{inner_width - key_width - 5}} │")
-    print(f"└{'─' * inner_width}┘")
+# 数据库配置
+class _DBSettings(_BaseSettingsWithEnv):
+    host: str = ""
+    port: str = ""
+    name: str = ""
+    user: str = ""
+    password: str = ""
+    model_config = {"env_prefix": "DB_"}
 
 
-print_settings()
+common_settings = _CommonSettings()
+web_settings = _WebSettings()
+db_settings = _DBSettings()
