@@ -1,18 +1,7 @@
-r"""
-Author: YIDA zhuhansong@merach.com
-Date: 2026-08-11 21:14:53
-LastEditors: YIDA zhuhansong@merach.com
-LastEditTime: 2026-08-14 16:45:06
-FilePath: \server-py\apps\web-service\app\main.py
-Description:
-
-Copyright (c) 2026 by ${git_name_email}, All Rights Reserved.
-"""
-
 from fastapi import FastAPI
-from app.core.config import common_settings, web_settings
-from app.api.welcome import router as welcome_router
 
+from app.core.config import common_settings, web_settings
+from app.exception.base import BusinessException
 
 app = FastAPI(
     title=web_settings.app_name,
@@ -23,5 +12,11 @@ app = FastAPI(
     ),
 )
 
-# 注册欢迎路由
-app.include_router(welcome_router)
+# 注册路由
+from app.api.products import router as product_router
+from app.api.categories import router as category_router
+from app.api.skus import router as sku_router
+
+app.include_router(product_router)
+app.include_router(category_router)
+app.include_router(sku_router)
