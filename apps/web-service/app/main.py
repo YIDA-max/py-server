@@ -12,7 +12,6 @@ Copyright (c) 2026 by ${git_name_email}, All Rights Reserved.
 from fastapi import FastAPI
 from app.core.config import common_settings, web_settings
 from app.api.welcome import router as welcome_router
-from app.api.items import router as items_router
 
 
 app = FastAPI(
@@ -26,6 +25,3 @@ app = FastAPI(
 
 # 注册欢迎路由
 app.include_router(welcome_router)
-
-# 注册物品路由
-app.include_router(items_router)

@@ -61,9 +61,6 @@ class Sku(Base, IDMixin):
     # 图片 URL，存储该 SKU 对应的展示图片地址
     image_url: Mapped[str] = mapped_column(String, comment="SKU 的展示图片链接")
 
-    # 喜好度，默认为 0
-    preference: Mapped[int] = mapped_column(default=0, comment="喜好度，默认为 0")
-
     # ---------- 关系定义 ----------
 
     # 与 Product 模型的父子关系（反向引用）
