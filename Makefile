@@ -15,3 +15,6 @@ db-upgrade:
 
 db-downgrade:
 	uv run --package web-service alembic -c apps/web-service/alembic.ini downgrade $(version)
+
+test:
+	uv run --package web-service pytest apps/web-service/test 
