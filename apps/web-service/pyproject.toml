@@ -21,9 +21,24 @@ packages = ["app/"]
 
 [dependency-groups]
 
-dev = ["httpx==0.28.1", "pytest==9.1.1", "pytest-asyncio==1.4.0"]
+dev = [
+    "httpx==0.28.1",
+    "pytest==9.1.1",
+    "pytest-asyncio==1.4.0",
+    "pytest-cov==7.0.0",
+]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 testpaths = ["test"]
+addopts = "-v --tb=short"
+markers = ["smoke: 标记为冒烟测试，验证核心流程是否正常"]
+
+[tool.coverage.run]
+source_pkgs = ["app"]
+omit = ["*/migrations/*"]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true

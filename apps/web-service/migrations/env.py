@@ -29,13 +29,14 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# 用项目配置覆盖 alembic.ini 中的 sqlalchemy.url
-# 这里使用同步驱动 postgresql://（而非 asyncpg 的 postgresql+asyncpg://）
-# 因为 Alembic 默认使用同步方式连接数据库执行迁移
-config.set_main_option(
-    "sqlalchemy.url",
-    f"postgresql://{db_settings.user}:{db_settings.password}@{db_settings.host}:{db_settings.port}/{db_settings.name}",
-)
+# 用项目配置覆盖 alembic.ini 中的占位 sqlalchemy.url。
+# 测试里会先 set_main_option 指向独立测试库，此时不要再改回 .env 里的库名。
+_current_url = config.get_main_option("sqlalchemy.url") or ""
+if "://" not in _current_url or _current_url.startswith("driver://"):
+    config.set_main_option(
+        "sqlalchemy.url",
+        f"postgresql://{db_settings.user}:{db_settings.password}@{db_settings.host}:{db_settings.port}/{db_settings.name}",
+    )
 
 # 告诉 Alembic 使用哪个模型的元数据，用于自动生成迁移脚本时对比模型与数据库差异
 target_metadata = Base.metadata
