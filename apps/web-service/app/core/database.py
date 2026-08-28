@@ -1,14 +1,3 @@
-"""
-Author: YIDA zhuhansong@merach.com
-Date: 2026-08-25 16:12:20
-LastEditors: YIDA zhuhansong@merach.com
-LastEditTime: 2026-08-25 16:13:11
-FilePath: \server-py\apps\web-service\app\core\database.py
-Description:
-
-Copyright (c) 2026 by ${git_name_email}, All Rights Reserved.
-"""
-
 from collections.abc import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import (
@@ -52,6 +41,6 @@ def get_session_factory() -> async_sessionmaker[AsyncSession]:
     return _session_factory
 
 
-async def get_db():
+async def get_db() -> AsyncGenerator[AsyncSession]:
     async with get_session_factory().begin() as session:
         yield session
